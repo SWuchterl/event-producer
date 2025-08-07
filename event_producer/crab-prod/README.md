@@ -3,15 +3,15 @@
 1. Setup the CMSSW env:
 
 ```bash
-cmsrel CMSSW_10_6_30
-cd CMSSW_10_6_30/src
+cmsrel CMSSW_14_0_19
+cd CMSSW_14_0_19/src
 cmsenv
 ```
 
 2. Clone the repo:
 
 ```bash
-git clone git@github.com:hqucms/event-producer.git -b Run2UL
+git clone https://github.com/SWuchterl/event-producer -b run3
 cd event-producer/event_producer/crab-prod
 ```
 
