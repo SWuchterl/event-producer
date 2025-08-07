@@ -18,14 +18,26 @@
 
 
 
+# python3 crab.py --private-mc \
+#     -p FAKEMiniAODv2_cfg.py \
+#     --site T2_CH_CERN \
+#     -o /store/group/cmst3/group/deepjet/privateMC/2024/mc \
+#     -t RunIII2024Summer24BTVDeepNTuplesv0 \
+#     -i samples/VBFH.conf \
+#     -e exe_BTV2024.sh --no-publication \
+#     --script-args beginseed=0 -s EventBased -n 1000 \
+#     --max-units 1000000 \
+#     --input-files inputs --max-memory 10000 \
+#     --num-cores 4 --work-area crab_projects_BTVSampleProdv0
+
 python3 crab.py --private-mc \
     -p FAKEMiniAODv2_cfg.py \
     --site T2_CH_CERN \
-    -o /store/group/cmst3/group/vhcc/privateMC/2024/mc \
-    -t RunIII2024Summer24NanoAODv15 \
-    -i samples/wcb.conf \
+    -o /store/group/cmst3/group/deepjet/privateMC/2024/mc \
+    -t RunIII2024Summer24BTVDeepNTuplesv0 \
+    -i samples/VBFH.conf \
     -e exe_BTV2024.sh --no-publication \
-    --script-args beginseed=0 -s EventBased -n 30 \
-    --max-units 30 \
+    --script-args beginseed=0 -s EventBased -n 500 \
+    --max-units 500 \
     --input-files inputs --max-memory 10000 \
-    --num-cores 4 --work-area crab_projects_TestBTVSampleProdv0p6
+    --num-cores 4 --work-area crab_projects_BTVTestSampleProdv0p1

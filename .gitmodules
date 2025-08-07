@@ -1,0 +1,3 @@
+[submodule "event_producer/crab-prod/mrCrabs"]
+	path = event_producer/crab-prod/mrCrabs
+	url = https://github.com/JanvanderLinden/mrCrabs.git
