@@ -217,7 +217,7 @@ cmsDriver.py \
   --customise Configuration/DataProcessing/Utils.addMonitoring \
   --datatier MINIAODSIM \
   --filein "file:RunIII2024Summer24RECO_$NAME_$JOBINDEX.root" \
-  --fileout file:mini.root \
+  --fileout "file:RunIII2024Summer24MiniAODv6_$NAME_$JOBINDEX.root" \
   --conditions 150X_mcRun3_2024_realistic_v2 \
   --step PAT \
   --runUnscheduled \
@@ -232,45 +232,43 @@ ls *.root
   # --runUnscheduled \
   # --procModifiers run2_miniAOD_UL \
 
-  # --fileout "file:RunIII2024Summer24MiniAODv6_$NAME_$JOBINDEX.root" \
-
 # cmsDriver.py \
 # --python_filename TOP-RunIII2024Summer24MiniAODv6-00001_1_cfg.py \
 # --fileout file:TOP-RunIII2024Summer24MiniAODv6-00001.root \
 # --filein "dbs:/TTtoLNuCB_TuneCP5_13p6TeV_powheg-pythia8/RunIII2024Summer24DRPremix-140X_mcRun3_2024_realistic_v26-v2/AODSIM"
 
-cmsRun -j FrameworkJobReport.xml "RunIII2024Summer24MiniAODv6_${NAME}_cfg.py"
+# cmsRun -j FrameworkJobReport.xml "RunIISummer20UL18MINIAODSIM_${NAME}_cfg.py"
 
 
 ############ nanoAODv15 ############
-# export SCRAM_ARCH=el8_amd64_gcc12
-# source /cvmfs/cms.cern.ch/cmsset_default.sh
-# export RELEASE=CMSSW_15_0_2
-# if [ -r $RELEASE/src ]; then
-#   echo release $RELEASE already exists
-# else
-#   scram p CMSSW $RELEASE
-# fi
-# cd $RELEASE/src
-# eval $(scram runtime -sh)
-# cd $WORKDIR
+export SCRAM_ARCH=el8_amd64_gcc12
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+export RELEASE=CMSSW_15_0_2
+if [ -r $RELEASE/src ]; then
+  echo release $RELEASE already exists
+else
+  scram p CMSSW $RELEASE
+fi
+cd $RELEASE/src
+eval $(scram runtime -sh)
+cd $WORKDIR
 
-# ## for the last step, needs to run with -j FrameworkJobReport.xml
-# cmsDriver.py \
-#   --python_filename "RunIII2024Summer24NanoAODv15_${NAME}_cfg.py" \
-#   --eventcontent NANOAODSIM \
-#   --customise Configuration/DataProcessing/Utils.addMonitoring \
-#   --datatier NANOAODSIM \
-#   --filein "file:RunIII2024Summer24MiniAODv6_$NAME_$JOBINDEX.root" \
-#   --fileout file:nano.root \
-#   --conditions 150X_mcRun3_2024_realistic_v2 \
-#   --step NANO \
-#   --era Run3_2024 \
-#   --no_exec \
-#   --scenario pp \
-#   --nThreads $NTHREAD \
-#   --mc \
-#   -n $NEVENTS
+## for the last step, needs to run with -j FrameworkJobReport.xml
+cmsDriver.py \
+  --python_filename "RunIII2024Summer24NanoAODv15_${NAME}_cfg.py" \
+  --eventcontent NANOAODSIM \
+  --customise Configuration/DataProcessing/Utils.addMonitoring \
+  --datatier NANOAODSIM \
+  --filein "file:RunIII2024Summer24MiniAODv6_$NAME_$JOBINDEX.root" \
+  --fileout file:nano.root \
+  --conditions 150X_mcRun3_2024_realistic_v2 \
+  --step NANO \
+  --era Run3_2024 \
+  --no_exec \
+  --scenario pp \
+  --nThreads $NTHREAD \
+  --mc \
+  -n $NEVENTS
 
 
   # --geometry DB:Extended \
@@ -280,4 +278,4 @@ cmsRun -j FrameworkJobReport.xml "RunIII2024Summer24MiniAODv6_${NAME}_cfg.py"
 # --fileout file:TOP-RunIII2024Summer24NanoAODv15-00001.root \
 # --filein "dbs:/TTtoLNuCB_TuneCP5_13p6TeV_powheg-pythia8/RunIII2024Summer24MiniAODv6-150X_mcRun3_2024_realistic_v2-v1/MINIAODSIM" \
 
-# cmsRun -j FrameworkJobReport.xml "RunIII2024Summer24NanoAODv15_${NAME}_cfg.py"
+cmsRun -j FrameworkJobReport.xml "RunIII2024Summer24NanoAODv15_${NAME}_cfg.py"

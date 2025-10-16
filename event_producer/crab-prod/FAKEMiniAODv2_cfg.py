@@ -53,7 +53,7 @@ process.MINIAODSIMoutput = cms.OutputModule("PoolOutputModule",
     dropMetaData = cms.untracked.string('ALL'),
     eventAutoFlushCompressedSize = cms.untracked.int32(-900),
     fastCloning = cms.untracked.bool(False),
-    fileName = cms.untracked.string('file:nano.root'),
+    fileName = cms.untracked.string('file:mini.root'),
     outputCommands = process.MINIAODSIMEventContent.outputCommands,
     overrideBranchesSplitLevel = cms.untracked.VPSet(
         cms.untracked.PSet(
