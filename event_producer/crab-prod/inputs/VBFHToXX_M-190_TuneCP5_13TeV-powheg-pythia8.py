@@ -57,7 +57,12 @@ generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
             # '25:onIfMatch = 5 -5',
             # '25:onIfMatch = 4 -4',
             # just cc
-            '25:onIfMatch = 4 -4',
+            # '25:onIfMatch = 4 -4',
+            # for 50% c, and rest split into uds
+            '25:addChannel = 1 0.5 100 4 -4', #c
+            '25:addChannel = 1 0.16 100 3 -3', #s
+            '25:addChannel = 1 0.17 100 2 -2', #u
+            '25:addChannel = 1 0.17 100 1 -1', #d
         ),
         parameterSets = cms.vstring('pythia8CommonSettings',
                                     'pythia8CP5Settings',
