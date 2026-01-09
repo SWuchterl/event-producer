@@ -42,6 +42,7 @@ generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
             'SpaceShower:dipoleRecoil = on',
             '25:m0 = 190.0',
             '25:onMode = off',
+            # below for custom BRs and decays
             # '25:oneChannel = 1 0.1 100 5 -5', #b
             # '25:addChannel = 1 0.1 100 4 -4', #c
             # '25:addChannel = 1 0.1 100 3 -3', #s
@@ -52,7 +53,10 @@ generator = cms.EDFilter("Pythia8ConcurrentHadronizerFilter",
             # '25:addChannel = 1 0.2 100 15 -15', #tau
             # '25:addChannel = 1 0.1 100 21 21', #gluon
             # 'ResonanceDecayFilter:filter = on',
-            '25:onIfMatch = 5 -5',
+            # below for default SM BRs
+            # '25:onIfMatch = 5 -5',
+            # '25:onIfMatch = 4 -4',
+            # just cc
             '25:onIfMatch = 4 -4',
         ),
         parameterSets = cms.vstring('pythia8CommonSettings',
