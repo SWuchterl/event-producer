@@ -13,17 +13,18 @@
 
 sleep $(( ( RANDOM % 200 ) + 1 ))
 
-wget --tries=3 https://github.com/colizz/hww-tagging/archive/refs/heads/dev-miniaods.tar.gz
-tar xaf dev-miniaods.tar.gz
-mv hww-tagging-dev-miniaods/event_producer/cmsconnect_miniaods_scouting_Run3/{inputs,fragments} .
+wget --tries=3 https://github.com/SWuchterl/event-producer/archive/refs/heads/dev/scoutingAK15.tar.gz
+tar xaf scoutingAK15.tar.gz
+mv event-producer-dev-scoutingAK15/event_producer/cmsconnect_miniaods_scouting_Run3/{inputs,fragments} .
 # rsync -a /afs/cern.ch/user/c/coli/work/hww/hww-tagging-minis/event_producer/cmsconnect_miniaods_scouting_Run3/{inputs,fragments} . # test-only
 
 xrdcp root://eoscms.cern.ch//store/cmst3/group/vhcc/sfTuples/downloads/MG5_aMC_v2.9.18.tar.gz inputs/MG5_aMC_v2.9.18.tar.gz
 
-if [ -d /afs/cern.ch/user/${USER:0:1}/$USER ]; then
-  export HOME=/afs/cern.ch/user/${USER:0:1}/$USER # crucial on lxplus condor but cannot set on cmsconnect!
-fi
-env
+# if [ -d /afs/cern.ch/user/${USER:0:1}/$USER ]; then
+#   export HOME=/afs/cern.ch/user/${USER:0:1}/$USER # crucial on lxplus condor but cannot set on cmsconnect!
+# fi
+# env
+export HOME=/afs/cern.ch/user/s/sewuchte
 
 JOBNUM=${1##*=} # hard coded by crab
 NEVENT=${2##*=} # ordered by crab.py script

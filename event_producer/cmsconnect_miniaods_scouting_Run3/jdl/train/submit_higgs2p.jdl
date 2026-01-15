@@ -7,14 +7,15 @@ NEVENTLUMIBLOCK = 25
 NTHREAD = 1
 PROCNAME = BulkGravitonToHHTo4QGluLTau_MX-600to6000_MH-15to650
 # send to CERN T2 /eos/cms/store/group/cmst3/group/deepjet/ScoutingAK15/OfflineTrees/
-EOSPATH = root://eoscms.cern.ch//store/group/cmst3/group/deepjet/ScoutingAK15/2024/$(PROCNAME)/MiniAODv6/miniv6_$(Cluster)-$(Process).root
+EOSPATH = root://eoscms.cern.ch//store/group/cmst3/group/deepjet/ScoutingAK15/2024MiniAOD_v2/$(PROCNAME)/MiniAODv6/miniv6_$(Cluster)-$(Process).root
 
 # note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
 BEGINSEED = 10002
 
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
-MY.WantOS = "el8"
+#MY.WantOS = "el8"
+MY.SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
 request_cpus = 1
 request_memory = 2000
 use_x509userproxy = true
@@ -30,4 +31,4 @@ should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT_OR_EVICT
 transfer_output_files   = dummy.cc
 
-Queue JOBNUM from seq 1 2000 |
+Queue JOBNUM from seq 1 6000 |

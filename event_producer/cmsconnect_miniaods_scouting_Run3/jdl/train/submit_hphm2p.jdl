@@ -1,26 +1,25 @@
 Universe   = vanilla
-Executable = run_and_transfer_2022.sh
-
-+ProjectName="cms.org.fnal"
+Executable = run_and_transfer.sh
 
 # custom args
 NEVENT = 500
 NEVENTLUMIBLOCK = 25
 NTHREAD = 1
 PROCNAME = H3ToHpHmTo4Q_MX-600to6000_MH-15to650
-EOSPATH = root://cceos.ihep.ac.cn//eos/ihep/cms/store/user/yiyangz/Research/CMS_VVV_Scouting/2022/$(PROCNAME)/MiniAODv6/miniv6_$(Cluster)-$(Process).root
+# send to CERN T2 /eos/cms/store/group/cmst3/group/deepjet/ScoutingAK15/OfflineTrees/
+EOSPATH = root://eoscms.cern.ch//store/group/cmst3/group/deepjet/ScoutingAK15/2024MiniAOD_v2/$(PROCNAME)/MiniAODv6/miniv6_$(Cluster)-$(Process).root
 
 # note: use different seeds in different H->2prong and H->WW/ZZ routines to avoid overlap in LHE events
-BEGINSEED = 10010
+BEGINSEED = 15010
 
 Arguments = $(JOBNUM) $(NEVENT) $(NEVENTLUMIBLOCK) $(NTHREAD) $(PROCNAME) $(BEGINSEED) $(EOSPATH) $(LHEPRODSCRIPT)
 
-#requirements = (OpSysAndVer =?= "CentOS8")
-Requirements = HAS_SINGULARITY == True
-+SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
+#MY.WantOS = "el8"
+MY.SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el8:x86_64"
 request_cpus = 1
 request_memory = 2000
 use_x509userproxy = true
++AccountingGroup = "group_u_CMST3.all"
 
 +JobFlavour = "tomorrow"
 
@@ -32,4 +31,4 @@ should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT_OR_EVICT
 transfer_output_files   = dummy.cc
 
-Queue JOBNUM from seq 1 750 |
+Queue JOBNUM from seq 1 5000 |
