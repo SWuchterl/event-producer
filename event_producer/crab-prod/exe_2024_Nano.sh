@@ -243,7 +243,7 @@ ls *.root
 ############ nanoAODv15 ############
 export SCRAM_ARCH=el8_amd64_gcc12
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-export RELEASE=CMSSW_15_0_2
+export RELEASE=CMSSW_15_0_15_patch4
 if [ -r $RELEASE/src ]; then
   echo release $RELEASE already exists
 else
