@@ -1,0 +1,16 @@
+condor_submit jdl_infer/submit_infer_fabio_znunu1j_50to150.jdl -batch-name offlineTuples_infer_fabio_znunu1j_50to150
+sleep 5
+condor_submit jdl_infer/submit_infer_fabio_znunu1j_150to250.jdl -batch-name offlineTuples_infer_fabio_znunu1j_150to250
+sleep 5
+condor_submit jdl_infer/submit_infer_fabio_znunu1j_250to400.jdl -batch-name offlineTuples_infer_fabio_znunu1j_250to400
+sleep 5
+condor_submit jdl_infer/submit_infer_fabio_znunu1j_400toinf.jdl -batch-name offlineTuples_infer_fabio_znunu1j_400toinf
+sleep 5
+condor_submit jdl_infer/submit_infer_fabio_znunu2j_50to150.jdl -batch-name offlineTuples_infer_fabio_znunu2j_50to150
+sleep 5
+condor_submit jdl_infer/submit_infer_fabio_znunu2j_150to250.jdl -batch-name offlineTuples_infer_fabio_znunu2j_150to250
+sleep 5
+condor_submit jdl_infer/submit_infer_fabio_znunu2j_250to400.jdl -batch-name offlineTuples_infer_fabio_znunu2j_250to400
+sleep 5
+condor_submit jdl_infer/submit_infer_fabio_znunu2j_400toinf.jdl -batch-name offlineTuples_infer_fabio_znunu2j_400toinf
+sleep 5
