@@ -48,25 +48,91 @@ fi
 scram b -j $NTHREAD
 eval $(scram runtime -sh)
 
+# ttcc DPS fragments use SecondHard:TwoCJets, which is not an official Pythia8
+# process (see inputs/pythia8_ttcc_patch). Only those jobs build the small
+# patched override; every other sample is untouched.
+TTCC_PATCHED=0
+if grep -q "SecondHard:TwoCJets" $WORKDIR/inputs/${NAME}.py; then
+  TTCC_PATCHED=1
+  PY8BASE=$(scram tool info pythia8 | sed -n 's/^PYTHIA8_BASE=//p')
+  TTCCDIR=$WORKDIR/pythia8_ttcc_override
+  mkdir -p $TTCCDIR/xmldoc
+  g++ -std=c++17 -O2 -fPIC -shared -I$PY8BASE/include \
+    $WORKDIR/inputs/pythia8_ttcc_patch/ProcessContainer.cc \
+    -L$PY8BASE/lib -lpythia8 -Wl,-rpath,$PY8BASE/lib \
+    -o $TTCCDIR/libpythia8_ttcc_override.so || exit $?
+  # xmldoc holds both *.xml settings files and data files (e.g. HadronWidths.dat)
+  # that Pythia8 loads relative to PYTHIA8DATA - ship all of them, not just xml.
+  for f in $PY8BASE/share/Pythia8/xmldoc/*; do
+    bn=$(basename $f)
+    [ "$bn" = "SecondHardProcess.xml" ] && continue
+    ln -sf $f $TTCCDIR/xmldoc/$bn
+  done
+  cp $WORKDIR/inputs/pythia8_ttcc_patch/SecondHardProcess.xml $TTCCDIR/xmldoc/SecondHardProcess.xml
+  ln -sfn $PY8BASE/share/Pythia8/pdfdata $TTCCDIR/pdfdata
+fi
+
 cd $WORKDIR
 
 # [NOTE] need to specify seeds otherwise gridpacks will be chosen from the same routine!!
 # remember to identify process.RandomNumberGeneratorService.externalLHEProducer.initialSeed="int(${SEED})"!!
-cmsDriver.py Configuration/GenProduction/python/${NAME}.py \
-  --python_filename "RunIII2024Summer24wmLHEGS_${NAME}_cfg.py" \
-  --eventcontent RAWSIM,LHE \
-  --customise Configuration/DataProcessing/Utils.addMonitoring \
-  --datatier GEN-SIM,LHE \
-  --fileout "file:RunIII2024Summer24wmLHEGS_$NAME_$JOBINDEX.root" \
-  --conditions 140X_mcRun3_2024_realistic_v26 \
-  --beamspot DBrealistic \
-  --step LHE,GEN,SIM \
-  --geometry DB:Extended \
-  --era Run3_2024 \
-  --nThreads $NTHREAD \
-  --customise_commands "process.source.numberEventsInLuminosityBlock=cms.untracked.uint32(1000)\\nprocess.source.firstLuminosityBlock=cms.untracked.uint32(${LUMISTART})\\nprocess.source.firstEvent=cms.untracked.uint64(${EVENTSTART})\\nprocess.RandomNumberGeneratorService.externalLHEProducer.initialSeed=${SEED}" \
-  --mc \
-  -n $NEVENTS || exit $?
+if [ "$TTCC_PATCHED" = "1" ]; then
+  # LD_PRELOAD is inherited by every child process, including the gridpack's
+  # own runcmsgrid.sh (built against an older, incompatible glibc/libstdc++).
+  # So the LHE step (which shells out to the gridpack) must run WITHOUT the
+  # preload, and only the GEN,SIM step (in-process Pythia8 hadronization)
+  # runs with it - hence the two-step split, only for ttcc jobs.
+  cmsDriver.py Configuration/GenProduction/python/${NAME}.py \
+    --python_filename "RunIII2024Summer24wmLHE_${NAME}_cfg.py" \
+    --eventcontent LHE \
+    --datatier LHE \
+    --fileout "file:RunIII2024Summer24wmLHE_$NAME_$JOBINDEX.root" \
+    --conditions 140X_mcRun3_2024_realistic_v26 \
+    --step LHE \
+    --era Run3_2024 \
+    --nThreads $NTHREAD \
+    --customise_commands "process.source.numberEventsInLuminosityBlock=cms.untracked.uint32(1000)\\nprocess.source.firstLuminosityBlock=cms.untracked.uint32(${LUMISTART})\\nprocess.source.firstEvent=cms.untracked.uint64(${EVENTSTART})\\nprocess.RandomNumberGeneratorService.externalLHEProducer.initialSeed=${SEED}" \
+    --mc \
+    -n $NEVENTS || exit $?
+
+  export LD_PRELOAD=$TTCCDIR/libpythia8_ttcc_override.so
+  export PYTHIA8DATA=$TTCCDIR/xmldoc
+
+  cmsDriver.py Configuration/GenProduction/python/${NAME}.py \
+    --python_filename "RunIII2024Summer24wmLHEGS_${NAME}_cfg.py" \
+    --eventcontent RAWSIM,LHE \
+    --customise Configuration/DataProcessing/Utils.addMonitoring \
+    --datatier GEN-SIM,LHE \
+    --filein "file:RunIII2024Summer24wmLHE_$NAME_$JOBINDEX.root" \
+    --fileout "file:RunIII2024Summer24wmLHEGS_$NAME_$JOBINDEX.root" \
+    --conditions 140X_mcRun3_2024_realistic_v26 \
+    --beamspot DBrealistic \
+    --step GEN,SIM \
+    --geometry DB:Extended \
+    --era Run3_2024 \
+    --nThreads $NTHREAD \
+    --mc \
+    -n $NEVENTS || exit $?
+
+  unset LD_PRELOAD PYTHIA8DATA
+  rm -f RunIII2024Summer24wmLHE_$NAME_$JOBINDEX.root
+else
+  cmsDriver.py Configuration/GenProduction/python/${NAME}.py \
+    --python_filename "RunIII2024Summer24wmLHEGS_${NAME}_cfg.py" \
+    --eventcontent RAWSIM,LHE \
+    --customise Configuration/DataProcessing/Utils.addMonitoring \
+    --datatier GEN-SIM,LHE \
+    --fileout "file:RunIII2024Summer24wmLHEGS_$NAME_$JOBINDEX.root" \
+    --conditions 140X_mcRun3_2024_realistic_v26 \
+    --beamspot DBrealistic \
+    --step LHE,GEN,SIM \
+    --geometry DB:Extended \
+    --era Run3_2024 \
+    --nThreads $NTHREAD \
+    --customise_commands "process.source.numberEventsInLuminosityBlock=cms.untracked.uint32(1000)\\nprocess.source.firstLuminosityBlock=cms.untracked.uint32(${LUMISTART})\\nprocess.source.firstEvent=cms.untracked.uint64(${EVENTSTART})\\nprocess.RandomNumberGeneratorService.externalLHEProducer.initialSeed=${SEED}" \
+    --mc \
+    -n $NEVENTS || exit $?
+fi
 
 ls *.root
 # from https://cms-pdmv-prod.web.cern.ch/mcm/public/restapi/requests/get_test/TOP-RunIII2024Summer24wmLHEGS-00001
