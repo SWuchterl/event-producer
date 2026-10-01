@@ -50,4 +50,4 @@ python3 crab.py --private-mc \
     --script-args beginseed=0 -s EventBased -n 1000 \
     --max-units 10000000 \
     --input-files inputs --max-memory 10000 \
-    --num-cores 4 --work-area crab_projects_RunIII2024Summer24_mc
+    --num-cores 4 --work-area crab_projects_RunIII2024Summer24_mc_v2
