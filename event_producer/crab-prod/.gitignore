@@ -1,0 +1,3 @@
+crab_projects_*/
+*.log
+__pycache__/
