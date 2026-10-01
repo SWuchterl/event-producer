@@ -96,7 +96,8 @@ ls *.root
 ############ DIGIPremix ############
 export SCRAM_ARCH=el8_amd64_gcc12
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-export RELEASE=CMSSW_14_0_21
+# export RELEASE=CMSSW_14_0_21
+export RELEASE=CMSSW_14_0_19
 if [ -r $RELEASE/src ]; then
   echo release $RELEASE already exists
 else
@@ -126,6 +127,11 @@ cmsDriver.py \
   -n $NEVENTS || exit $?
 
 ls *.root
+
+
+# after running LHE->DIGI we delete the LHE
+rm -f RunIII2024Summer24wmLHEGS_$NAME_$JOBINDEX.root
+
 # from https://cms-pdmv-prod.web.cern.ch/mcm/public/restapi/requests/get_test/TOP-RunIII2024Summer24DRPremix-00001
 # cmsDriver.py \
 # --python_filename TOP-RunIII2024Summer24DRPremix-00001_1_cfg.py \
@@ -190,6 +196,10 @@ cmsDriver.py \
   -n $NEVENTS || exit $?
 
 ls *.root
+
+# after running DIGI->RECO we delete the DIGI
+rm -f RunIII2024Summer24DRPremix_$NAME_$JOBINDEX.root
+
 # cmsDriver.py \
 # --python_filename TOP-RunIII2024Summer24DRPremix-00001_2_cfg.py \
 # --fileout file:TOP-RunIII2024Summer24DRPremix-00001.root \
@@ -228,6 +238,12 @@ cmsDriver.py \
   -n $NEVENTS || exit $?
 
 ls *.root
+
+
+# dumb idea....
+# # after running RECO->MINIAOD we delete the RECO
+# rm -f RunIII2024Summer24RECO_$NAME_$JOBINDEX.root
+
   # --fileout file:mini.root \
   # --runUnscheduled \
   # --procModifiers run2_miniAOD_UL \
