@@ -15,8 +15,18 @@ SEED=$((((${BEGINSEED} + ${JOBINDEX})) * NTHREAD * 4 + 1001)) # Space out seeds;
 
 WORKDIR=$(pwd)
 
+# Private Vts (t->sW) gridpacks were built for el9_amd64_gcc12 and need a
+# newer glibc than el8 provides. Nested containers don't work inside a CRAB
+# job, so the whole job (every step) must run as el9 instead of el8 for
+# these fragments - detected from "el9" in the gridpack filename they carry.
+if grep -q "el9" $WORKDIR/inputs/${NAME}.py; then
+  JOB_SCRAM_ARCH=el9_amd64_gcc12
+else
+  JOB_SCRAM_ARCH=el8_amd64_gcc12
+fi
+
 ############ LHEGEN ############
-export SCRAM_ARCH=el8_amd64_gcc12
+export SCRAM_ARCH=$JOB_SCRAM_ARCH
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 export RELEASE=CMSSW_14_0_19
 if [ -r $RELEASE/src ]; then
@@ -94,7 +104,7 @@ ls *.root
 #   -n $NEVENTS || exit $?
 
 ############ DIGIPremix ############
-export SCRAM_ARCH=el8_amd64_gcc12
+export SCRAM_ARCH=$JOB_SCRAM_ARCH
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 # export RELEASE=CMSSW_14_0_21
 export RELEASE=CMSSW_14_0_19
@@ -167,7 +177,7 @@ rm -f RunIII2024Summer24wmLHEGS_$NAME_$JOBINDEX.root
 #   -n $NEVENTS || exit $?
 
 ############ RECO ############
-export SCRAM_ARCH=el8_amd64_gcc12
+export SCRAM_ARCH=$JOB_SCRAM_ARCH
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 export RELEASE=CMSSW_14_0_21
 if [ -r $RELEASE/src ]; then
@@ -208,7 +218,7 @@ rm -f RunIII2024Summer24DRPremix_$NAME_$JOBINDEX.root
 
 
 ############ MiniAODv2 ############
-export SCRAM_ARCH=el8_amd64_gcc12
+export SCRAM_ARCH=$JOB_SCRAM_ARCH
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 export RELEASE=CMSSW_15_0_2
 if [ -r $RELEASE/src ]; then
